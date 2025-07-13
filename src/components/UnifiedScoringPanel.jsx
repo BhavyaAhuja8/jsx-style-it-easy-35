@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, RefreshCw, Edit, Trash2, AlertTriangle, Filter } from 'lucide-react';
+import { Plus, RefreshCw, Edit, Trash2, AlertTriangle, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import ScoreRuleModal from './ScoreRuleModal';
 import DeleteConfirmDialog from './DeleteConfirmDialog';
@@ -11,19 +11,18 @@ const UnifiedScoringPanel = () => {
   const [scoreRules, setScoreRules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editingRule, setEditingRule] = useState(null);
   const [deletingRule, setDeletingRule] = useState(null);
   const { toast } = useToast();
 
-  // Filter score rules based on search term
-  const filteredRules = scoreRules.filter(rule =>
-    rule.parameterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    rule.productId?.toString().includes(searchTerm) ||
-    rule.processName?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter score rules based on filter type
+  const filteredRules = scoreRules.filter(rule => {
+    if (filterType === 'all') return true;
+    return rule.processName?.toLowerCase().includes(filterType.toLowerCase());
+  });
 
   // Load score rules on component mount
   useEffect(() => {
@@ -146,50 +145,60 @@ const UnifiedScoringPanel = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Unified Scoring Panel</h1>
-              <p className="text-sm text-gray-600 mt-1">Manage and configure scoring rules for your processes</p>
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Unified Scoring Panel</h1>
+              <p className="text-gray-600">Manage and configure scoring rules for your processes</p>
             </div>
             
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search parameters, process, product..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-80 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
-                />
-              </div>
-              
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <Button
                 onClick={handleRefresh}
                 variant="outline"
-                size="icon"
                 disabled={loading || refreshing}
-                className="border-gray-200 hover:bg-gray-50"
+                className="border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
               >
-                <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
               </Button>
               
               <Button 
                 onClick={handleAddRule} 
-                className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-200 hover:shadow-md"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all duration-200 hover:shadow-lg"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Score Rule
               </Button>
             </div>
           </div>
+          
+          {/* Filter Section */}
+          <div className="mt-6 pt-6 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-gray-500" />
+                <span className="text-sm font-medium text-gray-700">Filter by:</span>
+              </div>
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-full sm:w-64 bg-gray-50 border-gray-200 focus:bg-white transition-all duration-200">
+                  <SelectValue placeholder="Select filter type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Processes</SelectItem>
+                  <SelectItem value="stating term">Stating Term</SelectItem>
+                  <SelectItem value="health insurance">Health Insurance</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
 
         {/* Content Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <div className="text-center">
@@ -206,7 +215,7 @@ const UnifiedScoringPanel = () => {
               <p className="text-gray-600 mb-6 max-w-md">
                 {scoreRules.length === 0 
                   ? "Get started by creating your first score rule to begin managing your scoring parameters."
-                  : "No rules match your search criteria. Try adjusting your search terms."}
+                  : "No rules match your filter criteria. Try adjusting your filter selection."}
               </p>
               {scoreRules.length === 0 && (
                 <Button 
