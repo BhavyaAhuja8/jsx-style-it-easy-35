@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -148,39 +148,61 @@ const ScoreRuleModal = ({ isOpen, onClose, onSave, editingRule }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {editingRule ? 'Edit Score Rule' : 'Add New Score Rule'}
-          </DialogTitle>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-0 shadow-xl animate-scale-in">
+        <DialogHeader className="border-b border-gray-200 pb-4">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-xl font-semibold text-gray-900">
+              {editingRule ? 'Edit Score Rule' : 'Add New Score Rule'}
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClose}
+              disabled={loading}
+              className="hover:bg-gray-100 rounded-full"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6 p-6">
           {/* Parameter Name */}
-          <div className="space-y-1">
-            <Label htmlFor="parameterName">Parameter Name *</Label>
+          <div className="space-y-2">
+            <Label htmlFor="parameterName" className="text-sm font-medium text-gray-700">
+              Parameter Name *
+            </Label>
             <Input
               id="parameterName"
               value={formData.parameterName}
               onChange={(e) => handleInputChange('parameterName', e.target.value)}
               placeholder="Enter parameter name"
-              className={errors.parameterName ? 'border-red-500' : ''}
+              className={`transition-all duration-200 ${
+                errors.parameterName 
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+              }`}
             />
             {errors.parameterName && (
-              <p className="text-sm text-red-500">{errors.parameterName}</p>
+              <div className="flex items-center gap-2 text-sm text-red-600">
+                <AlertCircle className="h-4 w-4" />
+                {errors.parameterName}
+              </div>
             )}
           </div>
 
           {/* Operator */}
-          <div className="space-y-1">
-            <Label htmlFor="operator">Operator *</Label>
+          <div className="space-y-2">
+            <Label htmlFor="operator" className="text-sm font-medium text-gray-700">
+              Operator *
+            </Label>
             <Select value={formData.operator} onValueChange={(value) => handleInputChange('operator', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-200">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border border-gray-200 shadow-lg">
                 {operators.map((op) => (
-                  <SelectItem key={op.value} value={op.value}>
+                  <SelectItem key={op.value} value={op.value} className="hover:bg-gray-50">
                     {op.label}
                   </SelectItem>
                 ))}
@@ -188,120 +210,177 @@ const ScoreRuleModal = ({ isOpen, onClose, onSave, editingRule }) => {
             </Select>
           </div>
 
-          {/* Product ID */}
-          <div className="space-y-1">
-            <Label htmlFor="productId">Product ID *</Label>
-            <Input
-              id="productId"
-              type="text"
-              value={formData.productId}
-              onChange={(e) => handleInputChange('productId', e.target.value)}
-              placeholder="Enter product ID"
-              className={errors.productId ? 'border-red-500' : ''}
-            />
-            {errors.productId && (
-              <p className="text-sm text-red-500">{errors.productId}</p>
-            )}
-          </div>
-
-          {/* Process Name */}
-          <div className="space-y-1">
-            <Label htmlFor="processName">Process Name *</Label>
-            <Input
-              id="processName"
-              value={formData.processName}
-              onChange={(e) => handleInputChange('processName', e.target.value)}
-              placeholder="Enter process name"
-              className={errors.processName ? 'border-red-500' : ''}
-            />
-            {errors.processName && (
-              <p className="text-sm text-red-500">{errors.processName}</p>
-            )}
-          </div>
-
-          {/* Min Value */}
-          <div className="space-y-1">
-            <Label htmlFor="minValue">Min Value *</Label>
-            <Input
-              id="minValue"
-              type="text"
-              value={formData.minValue}
-              onChange={(e) => handleInputChange('minValue', e.target.value)}
-              placeholder="Enter minimum value"
-              className={errors.minValue ? 'border-red-500' : ''}
-            />
-            {errors.minValue && (
-              <p className="text-sm text-red-500">{errors.minValue}</p>
-            )}
-          </div>
-
-          {/* Max Value - Only show for range operator */}
-          {formData.operator === 'range' && (
-            <div className="space-y-1">
-              <Label htmlFor="maxValue">Max Value *</Label>
+          {/* Product ID and Process Name Row */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="productId" className="text-sm font-medium text-gray-700">
+                Product ID *
+              </Label>
               <Input
-                id="maxValue"
+                id="productId"
                 type="text"
-                value={formData.maxValue}
-                onChange={(e) => handleInputChange('maxValue', e.target.value)}
-                placeholder="Enter maximum value"
-                className={errors.maxValue ? 'border-red-500' : ''}
+                value={formData.productId}
+                onChange={(e) => handleInputChange('productId', e.target.value)}
+                placeholder="Enter product ID"
+                className={`transition-all duration-200 ${
+                  errors.productId 
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                }`}
               />
-              {errors.maxValue && (
-                <p className="text-sm text-red-500">{errors.maxValue}</p>
+              {errors.productId && (
+                <div className="flex items-center gap-2 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4" />
+                  {errors.productId}
+                </div>
               )}
             </div>
-          )}
 
-          {/* Score */}
-          <div className="space-y-1">
-            <Label htmlFor="score">Score *</Label>
-            <Input
-              id="score"
-              type="text"
-              value={formData.score}
-              onChange={(e) => handleInputChange('score', e.target.value)}
-              placeholder="Enter score"
-              className={errors.score ? 'border-red-500' : ''}
-            />
-            {errors.score && (
-              <p className="text-sm text-red-500">{errors.score}</p>
+            <div className="space-y-2">
+              <Label htmlFor="processName" className="text-sm font-medium text-gray-700">
+                Process Name *
+              </Label>
+              <Input
+                id="processName"
+                value={formData.processName}
+                onChange={(e) => handleInputChange('processName', e.target.value)}
+                placeholder="Enter process name"
+                className={`transition-all duration-200 ${
+                  errors.processName 
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                }`}
+              />
+              {errors.processName && (
+                <div className="flex items-center gap-2 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4" />
+                  {errors.processName}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Values Row */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="minValue" className="text-sm font-medium text-gray-700">
+                Min Value *
+              </Label>
+              <Input
+                id="minValue"
+                type="text"
+                value={formData.minValue}
+                onChange={(e) => handleInputChange('minValue', e.target.value)}
+                placeholder="Min"
+                className={`transition-all duration-200 ${
+                  errors.minValue 
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                }`}
+              />
+              {errors.minValue && (
+                <div className="flex items-center gap-2 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4" />
+                  {errors.minValue}
+                </div>
+              )}
+            </div>
+
+            {/* Max Value - Only show for range operator */}
+            {formData.operator === 'range' && (
+              <div className="space-y-2">
+                <Label htmlFor="maxValue" className="text-sm font-medium text-gray-700">
+                  Max Value *
+                </Label>
+                <Input
+                  id="maxValue"
+                  type="text"
+                  value={formData.maxValue}
+                  onChange={(e) => handleInputChange('maxValue', e.target.value)}
+                  placeholder="Max"
+                  className={`transition-all duration-200 ${
+                    errors.maxValue 
+                      ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                      : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                  }`}
+                />
+                {errors.maxValue && (
+                  <div className="flex items-center gap-2 text-sm text-red-600">
+                    <AlertCircle className="h-4 w-4" />
+                    {errors.maxValue}
+                  </div>
+                )}
+              </div>
             )}
+
+            <div className="space-y-2">
+              <Label htmlFor="score" className="text-sm font-medium text-gray-700">
+                Score *
+              </Label>
+              <Input
+                id="score"
+                type="text"
+                value={formData.score}
+                onChange={(e) => handleInputChange('score', e.target.value)}
+                placeholder="Score"
+                className={`transition-all duration-200 ${
+                  errors.score 
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                }`}
+              />
+              {errors.score && (
+                <div className="flex items-center gap-2 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4" />
+                  {errors.score}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Status */}
-          <div className="space-y-1">
-            <Label htmlFor="status">Status</Label>
+          <div className="space-y-2">
+            <Label htmlFor="status" className="text-sm font-medium text-gray-700">
+              Status
+            </Label>
             <Select 
               value={formData.isActive ? 'active' : 'inactive'} 
               onValueChange={(value) => handleInputChange('isActive', value === 'active')}
             >
-              <SelectTrigger>
+              <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-200">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
+              <SelectContent className="bg-white border border-gray-200 shadow-lg">
+                <SelectItem value="active" className="hover:bg-gray-50">Active</SelectItem>
+                <SelectItem value="inactive" className="hover:bg-gray-50">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
             <Button
               type="button"
               variant="outline"
               onClick={handleClose}
               disabled={loading}
+              className="border-gray-300 hover:bg-gray-50 transition-all duration-200"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-200 hover:shadow-md"
             >
-              {loading ? 'Saving...' : (editingRule ? 'Update Rule' : 'Create Rule')}
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Saving...
+                </div>
+              ) : (
+                editingRule ? 'Update Rule' : 'Create Score Rule'
+              )}
             </Button>
           </div>
         </form>
