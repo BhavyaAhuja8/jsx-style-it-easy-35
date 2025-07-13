@@ -85,11 +85,12 @@ const ScoreRuleForm = ({ isOpen, onClose, onSave, editingRule }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
+            <label className="block text-sm font-medium text-foreground mb-1">Parameter Name</label>
             <Input
               placeholder="Enter parameter name"
               value={formData.parameterName}
               onChange={(e) => handleChange('parameterName', e.target.value)}
-              className={`w-full hover:border-blue-400 focus:border-blue-500 transition-colors ${
+              className={`w-48 hover:border-blue-400 focus:border-blue-500 transition-colors ${
                 errors.parameterName ? 'border-red-500' : ''
               }`}
               onMouseEnter={(e) => e.target.classList.add('shadow-sm')}
@@ -99,11 +100,12 @@ const ScoreRuleForm = ({ isOpen, onClose, onSave, editingRule }) => {
           </div>
 
           <div>
+            <label className="block text-sm font-medium text-foreground mb-1">Operator</label>
             <Select 
               value={formData.operator} 
               onValueChange={(value) => handleChange('operator', value)}
             >
-              <SelectTrigger className={`hover:border-blue-400 transition-colors ${
+              <SelectTrigger className={`w-48 hover:border-blue-400 transition-colors ${
                 errors.operator ? 'border-red-500' : ''
               }`}>
                 <SelectValue placeholder="Select operator" />
@@ -123,11 +125,12 @@ const ScoreRuleForm = ({ isOpen, onClose, onSave, editingRule }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Product ID</label>
               <Input
                 placeholder="Enter product ID"
                 value={formData.productId}
                 onChange={(e) => handleChange('productId', e.target.value)}
-                className={`hover:border-blue-400 focus:border-blue-500 transition-colors ${
+                className={`w-32 hover:border-blue-400 focus:border-blue-500 transition-colors ${
                   errors.productId ? 'border-red-500' : ''
                 }`}
                 onMouseEnter={(e) => e.target.classList.add('shadow-sm')}
@@ -136,11 +139,12 @@ const ScoreRuleForm = ({ isOpen, onClose, onSave, editingRule }) => {
               {errors.productId && <p className="text-red-500 text-xs mt-1">{errors.productId}</p>}
             </div>
             <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Process Name</label>
               <Input
                 placeholder="Enter process name"
                 value={formData.processName}
                 onChange={(e) => handleChange('processName', e.target.value)}
-                className={`hover:border-blue-400 focus:border-blue-500 transition-colors ${
+                className={`w-32 hover:border-blue-400 focus:border-blue-500 transition-colors ${
                   errors.processName ? 'border-red-500' : ''
                 }`}
                 onMouseEnter={(e) => e.target.classList.add('shadow-sm')}
@@ -150,14 +154,15 @@ const ScoreRuleForm = ({ isOpen, onClose, onSave, editingRule }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Min</label>
               <Input
                 placeholder="Min"
                 value={formData.minValue}
                 onChange={(e) => handleChange('minValue', e.target.value)}
                 type="number"
-                className={`hover:border-blue-400 focus:border-blue-500 transition-colors ${
+                className={`w-20 hover:border-blue-400 focus:border-blue-500 transition-colors ${
                   errors.minValue ? 'border-red-500' : ''
                 }`}
                 onMouseEnter={(e) => e.target.classList.add('shadow-sm')}
@@ -165,13 +170,31 @@ const ScoreRuleForm = ({ isOpen, onClose, onSave, editingRule }) => {
               />
               {errors.minValue && <p className="text-red-500 text-xs mt-1">{errors.minValue}</p>}
             </div>
+            {formData.operator === 'range' && (
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Max</label>
+                <Input
+                  placeholder="Max"
+                  value={formData.maxValue}
+                  onChange={(e) => handleChange('maxValue', e.target.value)}
+                  type="number"
+                  className={`w-20 hover:border-blue-400 focus:border-blue-500 transition-colors ${
+                    errors.maxValue ? 'border-red-500' : ''
+                  }`}
+                  onMouseEnter={(e) => e.target.classList.add('shadow-sm')}
+                  onMouseLeave={(e) => e.target.classList.remove('shadow-sm')}
+                />
+                {errors.maxValue && <p className="text-red-500 text-xs mt-1">{errors.maxValue}</p>}
+              </div>
+            )}
             <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Score</label>
               <Input
                 placeholder="Score"
                 value={formData.score}
                 onChange={(e) => handleChange('score', e.target.value)}
                 type="number"
-                className={`hover:border-blue-400 focus:border-blue-500 transition-colors ${
+                className={`w-20 hover:border-blue-400 focus:border-blue-500 transition-colors ${
                   errors.score ? 'border-red-500' : ''
                 }`}
                 onMouseEnter={(e) => e.target.classList.add('shadow-sm')}
@@ -180,23 +203,6 @@ const ScoreRuleForm = ({ isOpen, onClose, onSave, editingRule }) => {
               {errors.score && <p className="text-red-500 text-xs mt-1">{errors.score}</p>}
             </div>
           </div>
-
-          {formData.operator === 'range' && (
-            <div>
-              <Input
-                placeholder="Max"
-                value={formData.maxValue}
-                onChange={(e) => handleChange('maxValue', e.target.value)}
-                type="number"
-                className={`w-full hover:border-blue-400 focus:border-blue-500 transition-colors ${
-                  errors.maxValue ? 'border-red-500' : ''
-                }`}
-                onMouseEnter={(e) => e.target.classList.add('shadow-sm')}
-                onMouseLeave={(e) => e.target.classList.remove('shadow-sm')}
-              />
-              {errors.maxValue && <p className="text-red-500 text-xs mt-1">{errors.maxValue}</p>}
-            </div>
-          )}
 
           <div className="flex justify-center pt-4">
             <Button
