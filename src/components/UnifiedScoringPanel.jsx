@@ -94,27 +94,29 @@ const UnifiedScoringPanel = () => {
         // TODO: Replace with actual API call
         // await apiService.updateScore(editingRule.id, ruleData);
         toast({
-          title: "Score rule updated successfully",
-          description: `Rule "${ruleData.parameterName}" has been updated`,
+          title: "Success!",
+          description: `Score rule "${ruleData.parameterName}" has been updated successfully`,
           variant: "success"
         });
       } else {
         // TODO: Replace with actual API call
         // await apiService.createUnifiedScore(ruleData);
         toast({
-          title: "Score rule created successfully",
-          description: `Rule "${ruleData.parameterName}" has been created`,
+          title: "Success!",
+          description: `Score rule "${ruleData.parameterName}" has been created successfully`,
           variant: "success"
         });
       }
       
       setIsModalOpen(false);
+      setEditingRule(null);
       loadScoreRules();
     } catch (error) {
+      console.error('Error saving score rule:', error);
       toast({
-        title: editingRule ? "Failed to update score rule" : "Failed to create score rule",
-        description: error.message || "Please check your input and try again",
-        variant: "error"
+        title: "Error",
+        description: error.message || "Failed to save score rule. Please try again.",
+        variant: "destructive"
       });
     }
   };

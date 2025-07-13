@@ -35,10 +35,10 @@ const ScoringHeader = ({
       
       <div className="w-48">
         <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="bg-white border-gray-300">
+          <SelectTrigger className="bg-white border-gray-300 hover:border-gray-400 transition-colors">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-32">
             <SelectItem value="all">All Processes</SelectItem>
             <SelectItem value="term">Term</SelectItem>
             <SelectItem value="health insurance">Health Insurance</SelectItem>

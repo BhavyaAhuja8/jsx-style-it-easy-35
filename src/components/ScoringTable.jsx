@@ -10,9 +10,11 @@ const ScoringTable = ({ rules, onEdit, onDelete }) => {
         <p className="text-gray-600 mb-6">
           Get started by creating your first score rule to begin managing your scoring parameters.
         </p>
-        <button className="text-blue-600 hover:text-blue-700">
-          + Create First Score Rule
-        </button>
+        <div className="flex justify-center">
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors">
+            + Create First Score Rule
+          </button>
+        </div>
       </div>
     );
   }
@@ -37,7 +39,12 @@ const ScoringTable = ({ rules, onEdit, onDelete }) => {
         </TableHeader>
         <TableBody>
           {rules.map((rule, index) => (
-            <TableRow key={rule.id || index} className="border-b hover:bg-gray-50">
+            <TableRow 
+              key={rule.id || index} 
+              className="border-b hover:bg-gray-50 transition-colors cursor-pointer"
+              onMouseEnter={(e) => e.currentTarget.classList.add('bg-blue-50')}
+              onMouseLeave={(e) => e.currentTarget.classList.remove('bg-blue-50')}
+            >
               <TableCell className="text-gray-600">{index + 1}</TableCell>
               <TableCell className="font-medium">{rule.parameterName}</TableCell>
               <TableCell>{rule.productId}</TableCell>
@@ -46,10 +53,10 @@ const ScoringTable = ({ rules, onEdit, onDelete }) => {
               <TableCell>{rule.maxValue || '—'}</TableCell>
               <TableCell className="font-medium">{rule.score}</TableCell>
               <TableCell>
-                <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
+                <span className={`inline-flex px-2 py-1 text-xs rounded-full transition-colors ${
                   rule.isActive 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-red-100 text-red-800'
+                    ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                    : 'bg-red-100 text-red-800 hover:bg-red-200'
                 }`}>
                   {rule.isActive ? 'Active' : 'Inactive'}
                 </span>
@@ -61,7 +68,9 @@ const ScoringTable = ({ rules, onEdit, onDelete }) => {
               <TableCell>
                 <button 
                   onClick={() => onEdit(rule)}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 px-3 py-1 rounded transition-all"
+                  onMouseEnter={(e) => e.currentTarget.classList.add('shadow-sm')}
+                  onMouseLeave={(e) => e.currentTarget.classList.remove('shadow-sm')}
                 >
                   Modify
                 </button>
